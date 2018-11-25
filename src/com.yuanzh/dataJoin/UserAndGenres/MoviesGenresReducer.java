@@ -1,4 +1,4 @@
-package demo03;
+package com.yuanzh.dataJoin.UserAndGenres;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,7 +13,6 @@ public class MoviesGenresReducer extends Reducer<UserAndGender, Text, Text, Null
 	@Override
 	protected void reduce(UserAndGender key, Iterable<Text> value,
 			Reducer<UserAndGender, Text, Text, NullWritable>.Context context) throws IOException, InterruptedException {
-		//³õÊ¼»¯Ò»¸öHashMap¼¯ºÏ£¬¼¯ºÏÖÐµÄ¼üÎª18ÖÖµçÓ°ÀàÐÍ£¬Ã¿¸ö¼ü¶ÔÓ¦µÄÖµÎª0
 		HashMap<String,Integer> genresCounts=new HashMap<String,Integer>();
 		String[] genreslist={"Action","Adventure","Animation","Children's","Comedy","Crime","Documentary","Drama",
 				"Fantasy","Film-Noir","Horror","Musical","Mystery","Romance","Sci-Fi","Thriller","War","Western"		
@@ -23,24 +22,22 @@ public class MoviesGenresReducer extends Reducer<UserAndGender, Text, Text, Null
 				genresCounts.put(genreslist[i], 0);
 				}
 			}
-	    //±éÀúÖµÁÐ±í
 		for (Text val : value) {
-			//¶ÔÃ¿¸öÔªËØ½øÐÐ·Ö¸î
 			String[] genres=val.toString().split("\\|");
 			for(int i=0;i<genres.length;i++){
-				//Èç¹ûHashMapÔªËØµÄ¼ü°üº¬·Ö¸î½á¹ûµÄÔªËØ£¬Ôò¸Ã¼ü¶ÔÓ¦µÄÖµ¼Ó1
 				if(genresCounts.containsKey(genres[i])){
 				   genresCounts.put(genres[i], genresCounts.get(genres[i])+1);
 				}
 			}
 		}
-		//½«HashMap¼¯ºÏÖÐËùÓÐ¼ü¶ÔÓ¦µÄÖµ¸ù¾Ý¶ººÅÁ¬½Ó³É×Ö·û´®
+		//å°†HashMapé›†åˆä¸­æ‰€æœ‰é”®å¯¹åº”çš„valï¼Œ ä»¥é€—å·åˆ†éš”è¿žæŽ¥æˆå­—ç¬¦ä¸²
+
 		String result="";
 		for(Map.Entry<String, Integer> kv:genresCounts.entrySet()){
 			if(result.length()==0){
-				result=kv.getValue().toString();
+				result = kv.getValue().toString();
 			}else{
-				result=result+","+kv.getValue();
+				result = result + "," + kv.getValue();
 			}
 		}
 		

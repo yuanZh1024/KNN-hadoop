@@ -1,4 +1,4 @@
-package demo03;
+package com.yuanzh.dataJoin.UserAndGenres;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -12,19 +12,16 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import demo01.JarUtil;
-
 
 public class MoviesGenres extends Configured implements Tool{
 	public static Configuration getMyConfiguration(){
-		//ÉùÃ÷ÅäÖÃ
 		Configuration conf = new Configuration();
 		conf.setBoolean("mapreduce.app-submission.cross-platform",true);
-		conf.set("fs.defaultFS", "hdfs://master:8020");// Ö¸¶¨namenode
-		conf.set("mapreduce.framework.name","yarn"); // Ö¸¶¨Ê¹ÓÃyarn¿ò¼Ü
-		String resourcenode="master";
-		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // Ö¸¶¨resourcemanager
-		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");// Ö¸¶¨×ÊÔ´·ÖÅäÆ÷
+		conf.set("fs.defaultFS", "hdfs://localhost:9000");// Ö¸ï¿½ï¿½namenode
+		conf.set("mapreduce.framework.name","yarn"); // Ö¸ï¿½ï¿½Ê¹ï¿½ï¿½yarnï¿½ï¿½ï¿½
+		String resourcenode="localhost";
+		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // Ö¸ï¿½ï¿½resourcemanager
+		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");// Ö¸ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		conf.set("mapreduce.jobhistory.address",resourcenode+":10020");
 		conf.set("mapreduce.job.jar",JarUtil.jar(MoviesGenres.class));
 		return conf;	
@@ -45,7 +42,7 @@ public class MoviesGenres extends Configured implements Tool{
 	@Override
 	public int run(String[] args) throws Exception {
 		if(args.length!=3){
-			System.err.println("demo03.MoviesGenres <input> <output> <splitter>");
+			System.err.println("MoviesGenres <input> <output> <splitter>");
 			System.exit(-1);
 		}
 		Configuration conf=getMyConfiguration();

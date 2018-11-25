@@ -1,4 +1,4 @@
-package demo03;
+package com.yuanzh.dataJoin.UserAndGenres;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -1,4 +1,4 @@
-package demo01;
+package com.yuanzh.dataJoin.UsersAndMovies;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -13,22 +13,21 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-
+import java.net.URI;
 
 
 public class UsersAndMovies extends Configured implements Tool {
 	public static Configuration getMyConfiguration(){
-		//ÉùÃ÷ÅäÖÃ
 		Configuration conf = new Configuration();
 		conf.setBoolean("mapreduce.app-submission.cross-platform",true);
-		conf.set("fs.defaultFS", "hdfs://master:8020");// Ö¸¶¨namenode
-		conf.set("mapreduce.framework.name","yarn"); // Ö¸¶¨Ê¹ÓÃyarn¿ò¼Ü
-		String resourcenode="master";
-		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // Ö¸¶¨resourcemanager
-		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");// Ö¸¶¨×ÊÔ´·ÖÅäÆ÷
+		conf.set("fs.defaultFS", "hdfs://localhost:9000");// Ö¸ï¿½ï¿½namenode
+		conf.set("mapreduce.framework.name","yarn"); // Ö¸ï¿½ï¿½Ê¹ï¿½ï¿½yarnï¿½ï¿½ï¿½
+		String resourcenode="localhost";
+		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // Ö¸ï¿½ï¿½resourcemanager
+		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");// Ö¸ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		conf.set("mapreduce.jobhistory.address",resourcenode+":10020");
 		conf.set("mapreduce.job.jar",JarUtil.jar(UsersAndMovies.class));
-		return conf;	
+		return conf;
 	}
 
 	@Override
@@ -38,9 +37,15 @@ public class UsersAndMovies extends Configured implements Tool {
 			System.exit(-1);
 		}
 		Configuration conf=UsersAndMovies.getMyConfiguration();
-		DistributedCache.addCacheFile(new Path(args[0]).toUri(), conf);
+		conf.set("yarn.application.classpath","/usr/local/Cellar/hadoop/3.1.1/libexec/etc/hadoop:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/*");
+		//DistributedCache.addCacheFile(new Path(args[0]).toUri(), conf);
 		conf.set("SPLITTER", args[3]);
 		Job job=Job.getInstance(conf, "joindata");
+
+		URI[] paths = new URI[1];
+		paths[0]=new URI(args[0]);
+		job.setCacheFiles(paths);
+
 		job.setJarByClass(UsersAndMovies.class);
 		job.setMapperClass(UsersMoviesMapper.class);
 		job.setMapOutputKeyClass(Text.class);

@@ -11,18 +11,26 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import sun.security.krb5.Config;
+
+import java.net.URI;
+
 public class RatingsAndUsers extends Configured implements Tool{
 
 	@Override
 	public int run(String[] args) throws Exception {
 		if(args.length!=4){
-			System.err.println("demo.RatingsAndUsers <cachePath> <input> <output> <splitter>");
+			System.err.println("com.yuanzh.dataJoin.RatingsAndUsers <cachePath> <input> <output> <splitter>");
 			System.exit(-1);
 		}
 		Configuration conf=RatingsAndUsers.getMyConfiguration();
-		DistributedCache.addCacheFile(new Path(args[0]).toUri(), conf);
+		//DistributedCache.addCacheFile(new Path(args[0]).toUri(), conf);
 		conf.set("SPLITTER", args[3]);
 		Job job=Job.getInstance(conf, "joindata");
+		URI[] path = new URI[1];
+		path[0] = new Path(args[0]).toUri();
+		job.setCacheFiles(path);
+
 		job.setJarByClass(RatingsAndUsers.class);
 		job.setMapperClass(JoinMapper.class);
 		job.setMapOutputKeyClass(Text.class);
@@ -48,14 +56,14 @@ public class RatingsAndUsers extends Configured implements Tool{
 		}
 	}
 	public static Configuration getMyConfiguration(){
-		//��������
 		Configuration conf = new Configuration();
+		conf.set("yarn.application.classpath","/usr/local/Cellar/hadoop/3.1.1/libexec/etc/hadoop:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/*");
 		conf.setBoolean("mapreduce.app-submission.cross-platform",true);
-		conf.set("fs.defaultFS", "hdfs://localhost:8020");// ָ��namenode
-		conf.set("mapreduce.framework.name","yarn"); // ָ��ʹ��yarn���
+		conf.set("fs.defaultFS", "hdfs://localhost:9000");
+		conf.set("mapreduce.framework.name","yarn");
 		String resourcenode="localhost";
-		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // ָ��resourcemanager
-		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");// ָ����Դ������
+		conf.set("yarn.resourcemanager.address", resourcenode+":8032");
+		conf.set("yarn.resourcemanager.scheduler.address",resourcenode+":8030");
 		conf.set("mapreduce.jobhistory.address",resourcenode+":10020");
 		conf.set("mapreduce.job.jar",JarUtil.jar(RatingsAndUsers.class));
 		return conf;	

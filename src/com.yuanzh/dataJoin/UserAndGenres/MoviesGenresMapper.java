@@ -1,4 +1,4 @@
-package demo03;
+package com.yuanzh.dataJoin.UserAndGenres;
 
 import java.io.IOException;
 
@@ -21,10 +21,8 @@ public class MoviesGenresMapper extends Mapper<LongWritable, Text, UserAndGender
 		String[] val=value.toString().split(splitter);
 		user_gender.setUserID(val[0]);
 		if(val[1].equals("M")){
-			//性别为M则用0标记
 			user_gender.setGender(0);
 		}else{
-			//性别为F则用1标记
 			user_gender.setGender(1);
 		}
 		user_gender.setAge(Integer.parseInt(val[2]));

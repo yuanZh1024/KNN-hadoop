@@ -1,4 +1,4 @@
-package demo01;
+package com.yuanzh.dataJoin.UsersAndMovies;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 public class JarUtil {
-    public static String jar(Class<?> cls){// 验证ok
+    public static String jar(Class<?> cls){
         String outputJar =cls.getName()+".jar";
         String input = cls.getClassLoader().getResource("").getFile();
         input= input.substring(0,input.length()-1);
@@ -35,7 +35,7 @@ public class JarUtil {
     private static void jar(JarOutputStream out, File f, String base) throws Exception {
         if (f.isDirectory()) {
             File[] fl = f.listFiles();
-            base = base.length() == 0 ? "" : base + "/"; // 注意，这里用左斜杠
+            base = base.length() == 0 ? "" : base + "/";
             for (int i = 0; i < fl.length; i++) {
                 jar(out, fl[ i], base + fl[ i].getName());
             }
