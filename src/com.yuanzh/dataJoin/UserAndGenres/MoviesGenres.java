@@ -18,6 +18,7 @@ public class MoviesGenres extends Configured implements Tool{
 		Configuration conf = new Configuration();
 		conf.setBoolean("mapreduce.app-submission.cross-platform",true);
 		conf.set("fs.defaultFS", "hdfs://localhost:9000");// ָ��namenode
+		conf.set("yarn.application.classpath","/usr/local/Cellar/hadoop/3.1.1/libexec/etc/hadoop:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/common/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/hdfs/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/mapreduce/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/lib/*:/usr/local/Cellar/hadoop/3.1.1/libexec/share/hadoop/yarn/*");
 		conf.set("mapreduce.framework.name","yarn"); // ָ��ʹ��yarn���
 		String resourcenode="localhost";
 		conf.set("yarn.resourcemanager.address", resourcenode+":8032"); // ָ��resourcemanager
